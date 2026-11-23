@@ -3,6 +3,10 @@ Hybrid A*-guided MPPI
 
 This is a [ROS2] humble package developed for Hybrid A*-guided MPPI. The software is designed for (local) navigation tasks with robots on rough terrain, which are equipped with a pose estimation and distance sensor. The goal of this software is to provide navigation framework for rough terrain.
 
+
+基于原来的仓库改进了代价地图的构造以及全局路径规划(趋向于更加安全和平坦的路径)
+
+
 ### 依赖
 ```bash
 sudo apt install \
