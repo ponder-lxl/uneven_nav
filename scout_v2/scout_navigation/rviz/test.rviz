@@ -176,7 +176,7 @@ Visualization Manager:
       Color: 200; 200; 200
       Color Layer: elevation
       Color Transformer: GridMapLayer
-      Enabled: false
+      Enabled: true
       Height Layer: elevation
       Height Transformer: GridMapLayer
       History Length: 1
@@ -185,7 +185,7 @@ Visualization Manager:
       Max Intensity: 10
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: GridMap
+      Name: ElevationMap
       Show Grid Lines: true
       Topic:
         Depth: 5
@@ -195,23 +195,23 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /elevation_map
       Use Rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Class: grid_map_rviz_plugin/GridMap
       Color: 200; 200; 200
       Color Layer: traversability
-      Color Transformer: ""
-      Enabled: false
+      Color Transformer: GridMapLayer
+      Enabled: true
       Height Layer: elevation
       Height Transformer: GridMapLayer
       History Length: 1
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 10
+      Max Intensity: 1
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: Traversability_grid
+      Name: TraversabilityMap
       Show Grid Lines: true
       Topic:
         Depth: 5
@@ -221,34 +221,34 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /traversability_map
       Use Rainbow: true
-      Value: false
+      Value: true
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: map
       Draw Behind: false
-      Enabled: false
-      Name: Map
+      Enabled: true
+      Name: TraversabilityOcc
       Topic:
         Depth: 5
-        Durability Policy: Transient Local
+        Durability Policy: Volatile
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /traversability_grid
+        Value: /traversability_occ_map
       Update Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /traversability_grid_updates
+        Value: /traversability_occ_map_updates
       Use Timestamp: false
-      Value: false
+      Value: true
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: costmap
       Draw Behind: false
-      Enabled: false
-      Name: Map
+      Enabled: true
+      Name: GlobalCostmap
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -263,13 +263,13 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /global_costmap/costmap_updates
       Use Timestamp: false
-      Value: false
+      Value: true
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: costmap
       Draw Behind: true
       Enabled: true
-      Name: Map
+      Name: LocalCostmap
       Topic:
         Depth: 5
         Durability Policy: Volatile

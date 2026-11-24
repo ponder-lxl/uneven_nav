@@ -1,9 +1,8 @@
 import os
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.substitutions import LaunchConfiguration
-from launch.actions import IncludeLaunchDescription
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -52,10 +51,14 @@ def generate_launch_description():
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen')
 
+    # Delay Nav2 until /clock and odom->base_link TF are typically available.
+    # Activating local_costmap before TF exists causes change_state timeouts.
+    delayed_nav2 = TimerAction(period=3.0, actions=[nav2_node])
+
     ld = LaunchDescription()
 
     ld.add_action(declare_use_sim_time_argument)
-    ld.add_action(nav2_node)
+    ld.add_action(delayed_nav2)
     ld.add_action(start_rviz)
     ld.add_action(occmap_to_costmap_node)
 

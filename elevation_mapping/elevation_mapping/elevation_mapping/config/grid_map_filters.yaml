@@ -142,16 +142,56 @@ grid_map_filters:
           output_layer: roughness
           expression: abs(elevation_inpainted - elevation_smooth)
 
-      filter8:  # Compute traversability from slope and roughness (keep contrast).
+      # Local height discontinuity (step): max-min elevation inside a sliding window.
+      # Approximates ETH StepFilter's first-pass step_height without extra packages.
+      filter8:
+        name: step_height
+        type: gridMapFilters/SlidingWindowMathExpressionFilter
+        params:
+          input_layer: elevation_inpainted
+          output_layer: step_height
+          expression: maxOfFinites(elevation_inpainted) - minOfFinites(elevation_inpainted)
+          compute_empty_cells: false
+          edge_handling: crop
+          window_length: 0.3  # ~3 cells at 0.1 m resolution
+
+      # Normalize step height to [0,1] traversability (1 = flat / safe).
+      # critical_value 0.12 m matches scout test.yaml StepFilter setting.
+      filter9:
+        name: step
+        type: gridMapFilters/MathExpressionFilter
+        params:
+          output_layer: step
+          expression: 1.0 - (step_height / 0.12)
+
+      filter10:  # Clamp step traversability to [0,1].
+        name: step_lower_threshold
+        type: gridMapFilters/ThresholdFilter
+        params:
+          layer: step
+          lower_threshold: 0.0
+          set_to: 0.0
+
+      filter11:
+        name: step_upper_threshold
+        type: gridMapFilters/ThresholdFilter
+        params:
+          layer: step
+          upper_threshold: 1.0
+          set_to: 1.0
+
+      filter12:  # Traversability from slope, roughness, and step.
         name: traversability
         type: gridMapFilters/MathExpressionFilter
         params:
           output_layer: traversability
-          expression: 0.8 * (1.0 - (slope / 0.65)) + 0.2 * (1.0 - (roughness / 0.25))
-          #moon expression: 0.8 * (1.0 - (slope / 0.65)) + 0.2 * (1.0 - (roughness / 0.25))   
+          # Weights: slope 0.55, roughness 0.15, step 0.30 (step is safety-critical for wheeled robots).
+          expression: 0.55 * (1.0 - (slope / 0.65)) + 0.15 * (1.0 - (roughness / 0.25)) + 0.30 * step
+          # previous (no step): 0.8 * (1.0 - (slope / 0.65)) + 0.2 * (1.0 - (roughness / 0.25))
+          #moon expression: 0.8 * (1.0 - (slope / 0.65)) + 0.2 * (1.0 - (roughness / 0.25))
           #local expression: 0.8 * (1.0 - (slope / 0.9)) + 0.2 * (1.0 - (roughness / 0.25))
 
-      filter9:  # Set lower threshold on traversability.
+      filter13:  # Set lower threshold on traversability.
         name: traversability_lower_threshold
         type: gridMapFilters/ThresholdFilter
         params:
@@ -159,7 +199,7 @@ grid_map_filters:
           lower_threshold: 0.0
           set_to: 0.0
 
-      filter10:  # Set upper threshold on traversability.
+      filter14:  # Set upper threshold on traversability.
         name: traversability_upper_threshold
         type: gridMapFilters/ThresholdFilter
         params:

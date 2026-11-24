@@ -1,7 +1,7 @@
 grid_map_visualization:
   ros__parameters:
     grid_map_topic: /traversability_map
-    grid_map_visualizations: [surface_normals, traversability_grid, slope, roughness] 
+    grid_map_visualizations: [surface_normals, traversability_grid, slope, roughness, step, step_height]
     surface_normals:
       type: vectors
       params:
@@ -28,3 +28,15 @@ grid_map_visualization:
         layer: roughness
         data_min: 0.0
         data_max: 1.0
+    step:
+      type: occupancy_grid
+      params:
+        layer: step
+        data_min: 0.0
+        data_max: 1.0
+    step_height:
+      type: occupancy_grid
+      params:
+        layer: step_height
+        data_min: 0.0
+        data_max: 0.25
